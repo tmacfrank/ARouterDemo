@@ -1,2 +1,5 @@
+include ':module-personal'
+include ':module-personal'
+include ':module-order'
 include ':app'
 rootProject.name = "ARouterDemo"

@@ -25,6 +25,6 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
+    // 应用所有在 config.gradle 中定义的依赖
     support.each { k, v -> implementation v }
-
 }

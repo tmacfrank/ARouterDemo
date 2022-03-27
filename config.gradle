@@ -1,0 +1,28 @@
+ext {
+
+    // 表示是否为正式版本，即集成化环境
+    isRelease = true
+
+    // 建立 Map，以键值对形式存储版本信息变量
+    androidId = [
+            compileSdkVersion: 32,
+            buildToolsVersion: "29.0.3",
+            minSdkVersion    : 23,
+            targetSdkVersion : 32,
+            versionCode      : 1,
+            versionName      : "1.0"
+    ]
+
+    // 所有模块的 Id
+    appId = [
+            app     : "com.demo.arouter",
+            order   : "com.demo.order",
+            personal: "com.demo.personal"
+    ]
+
+    // 所有模块都使用的依赖才存在这里
+    dependencies = [
+            "appcompat" : "androidx.appcompat:appcompat:1.3.1",
+            "constraint": "androidx.constraintlayout:constraintlayout:2.0.4"
+    ]
+}

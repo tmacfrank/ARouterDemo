@@ -1,15 +1,19 @@
 apply plugin: 'com.android.application'
 
+def androidId = rootProject.ext.androidId
+def appId = rootProject.ext.appId
+def support = rootProject.ext.dependencies
+
 android {
-    compileSdkVersion 32
-    buildToolsVersion "29.0.3"
+    compileSdkVersion androidId.compileSdkVersion
+    buildToolsVersion androidId.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.demo.arouter"
-        minSdkVersion 23
-        targetSdkVersion 32
-        versionCode 1
-        versionName "1.0"
+        applicationId appId.app
+        minSdkVersion androidId.minSdkVersion
+        targetSdkVersion androidId.targetSdkVersion
+        versionCode androidId.versionCode
+        versionName androidId.versionName
     }
 
     buildTypes {
@@ -22,7 +26,15 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.appcompat:appcompat:1.3.1'
 
+    // 应用所有在 config.gradle 中定义的依赖
+    support.each { k, v -> implementation v }
 
+    // 集成化模式，要发布版本时，子模块就都不能独立运行了
+    if (isRelease) {
+        implementation project(":module-order")
+        implementation project(":module-personal")
+    }
+
+    implementation project(":lib-common")
 }

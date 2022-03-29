@@ -1,3 +1,4 @@
+include ':arouter-annotation'
 include ':lib-common'
 include ':module-personal'
 include ':module-personal'

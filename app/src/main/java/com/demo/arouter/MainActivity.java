@@ -2,7 +2,8 @@ package com.demo.arouter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import com.demo.arouter.annotation.Route;
+import com.demo.arouter.api.manager.ARouter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -10,5 +11,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    public void jumpToOrder(View view) {
+        ARouter.getInstance().build("/order/Order_MainActivity")
+                .withString("key","value")
+                .navigation(this);
     }
 }

@@ -1,4 +1,3 @@
-// 切换集成化环境与组件化环境
 if (isRelease) {
     apply plugin: 'com.android.library'
 } else {
@@ -14,14 +13,19 @@ android {
     buildToolsVersion androidId.buildToolsVersion
 
     defaultConfig {
-        // 只有组件化环境时才需要执行 applicationId
         if (!isRelease) {
-            applicationId appId.order
+            applicationId appId.personal
         }
         minSdkVersion androidId.minSdkVersion
         targetSdkVersion androidId.targetSdkVersion
         versionCode androidId.versionCode
         versionName androidId.versionName
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
     }
 
     buildTypes {
@@ -34,14 +38,11 @@ android {
     sourceSets {
         main {
             if (!isRelease) {
-                // 测试版本，组件化环境，让 /main/debug/ 下的 AndroidManifest 生效
                 manifest.srcFile 'src/main/debug/AndroidManifest.xml'
             } else {
-                // 正式版本，集成化环境，让 main 下的 AndroidManifest 生效
                 manifest.srcFile 'src/main/AndroidManifest.xml'
 
                 java {
-                    // release 时 debug 目录下的文件不需要合并到主工程中，减小 apk 体积
                     exclude '**/debug/**'
                 }
             }
@@ -53,4 +54,5 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     support.each { k, v -> implementation v }
     implementation project(":lib-common")
+    annotationProcessor project(":arouter-compiler")
 }

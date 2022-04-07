@@ -1,7 +1,9 @@
+include ':arouter-api'
+include ':arouter-compiler'
 include ':arouter-annotation'
 include ':lib-common'
+include ':personal'
 include ':module-personal'
-include ':module-personal'
-include ':module-order'
+include ':order'
 include ':app'
 rootProject.name = "ARouterDemo"

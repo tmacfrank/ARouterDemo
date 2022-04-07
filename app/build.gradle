@@ -14,6 +14,12 @@ android {
         targetSdkVersion androidId.targetSdkVersion
         versionCode androidId.versionCode
         versionName androidId.versionName
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), packageNameForAPT: packageNameForAPT]
+            }
+        }
     }
 
     buildTypes {
@@ -32,9 +38,10 @@ dependencies {
 
     // 集成化模式，要发布版本时，子模块就都不能独立运行了
     if (isRelease) {
-        implementation project(":module-order")
-        implementation project(":module-personal")
+        implementation project(":order")
+        implementation project(":personal")
     }
 
-    implementation project(":lib-common")
+    implementation project(':lib-common')
+    annotationProcessor project(':arouter-compiler')
 }

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.LruCache;
 
 import com.demo.arouter.api.core.ILoadGroup;
+import com.demo.arouter.api.core.ILoadParameter;
 import com.demo.arouter.api.core.ILoadPath;
 import com.demo.arouter.model.RouteMeta;
 
@@ -18,16 +19,19 @@ public class ARouter {
     public static final String PROJECT = "ARouter";
     public static final String PREFIX_OF_GROUP_NAME = PROJECT + SEPARATOR + "Group" + SEPARATOR;
     public static final String PACKAGE_OF_GENERATE_FILE = "com.demo.arouter.routes";
+    public static final String SUFFIX_OF_PARAMETER_FILE = "$$Parameter";
 
     private static volatile ARouter sInstance;
     private String mGroup;
     private String mPath;
     private LruCache<String, ILoadGroup> mGroupCache;
     private LruCache<String, ILoadPath> mPathCache;
+    private LruCache<String, ILoadParameter> mParameterCache;
 
     private ARouter() {
         mGroupCache = new LruCache<>(100);
         mPathCache = new LruCache<>(100);
+        mParameterCache = new LruCache<>(100);
     }
 
     public static ARouter getInstance() {
@@ -118,5 +122,22 @@ public class ARouter {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void inject(Activity activity) {
+        String activityName = activity.getClass().getName();
+        ILoadParameter iLoadParameter = mParameterCache.get(activityName);
+        try {
+            if (iLoadParameter == null) {
+                // 缓存中没有，就要通过反射拿到接口实现类
+                String parameterFileName = activityName + SUFFIX_OF_PARAMETER_FILE;
+                iLoadParameter = (ILoadParameter) Class.forName(parameterFileName).newInstance();
+                mParameterCache.put(activityName, iLoadParameter);
+            }
+
+            iLoadParameter.loadParameter(activity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,10 +1,14 @@
 package com.demo.arouter;
 
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.demo.arouter.annotation.Route;
 import com.demo.arouter.api.manager.ARouter;
 
+@Route(path = "/app/MainActivity")
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -15,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void jumpToOrder(View view) {
         ARouter.getInstance().build("/order/Order_MainActivity")
-                .withString("key","value")
+                .withInt("agex", 29)
+                .withString("name", "Angela")
                 .navigation(this);
     }
 }

@@ -94,6 +94,8 @@ public class ParameterProcessor extends BaseProcessor {
             ParameterFactory parameterFactory = new ParameterFactory.Builder(parameterSpec)
                     .setClassName(className)
                     .setMessager(messager)
+                    .setTypeUtils(typeUtils)
+                    .setElementUtils(elementUtils)
                     .build();
 
             // 添加方法体内容第一行

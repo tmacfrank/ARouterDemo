@@ -35,9 +35,11 @@ public class Constants {
     // Custom interface
     private static final String AROUTER_PACKAGE = "com.demo.arouter";
     private static final String API_PACKAGE = ".api.core";
+    public static final String MANAGER_PACKAGE = AROUTER_PACKAGE + ".api.manager";
     public static final String IROUTE_PATH = AROUTER_PACKAGE + API_PACKAGE + ".ILoadPath";
     public static final String IROUTE_GROUP = AROUTER_PACKAGE + API_PACKAGE + ".ILoadGroup";
     public static final String IPARAMETER = AROUTER_PACKAGE + API_PACKAGE + ".ILoadParameter";
+    public static final String IPROVIDER = AROUTER_PACKAGE + API_PACKAGE + ".IProvider";
 
     // Annotation type
     public static final String ANNOTATION_TYPE_ROUTE = AROUTER_PACKAGE + ".annotation.Route";

@@ -115,7 +115,8 @@ public class ARouter {
                             context.startActivity(intent);
                         }
                         break;
-                    // todo 其它类型处理待添加...
+                    case PROVIDER:
+                        return routeMeta.getTargetClass().newInstance();
                 }
             }
         } catch (Exception e) {

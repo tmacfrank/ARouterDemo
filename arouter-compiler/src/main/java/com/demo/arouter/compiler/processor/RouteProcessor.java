@@ -64,6 +64,7 @@ public class RouteProcessor extends BaseProcessor {
     private void parseElement(Set<? extends Element> elements) {
         // 获取 Activity 类对应的 Element 和 TypeMirror 对象
         TypeElement activityType = elementUtils.getTypeElement(RouteType.ACTIVITY.getClassName());
+        TypeElement providerType = elementUtils.getTypeElement(RouteType.PROVIDER.getClassName());
         TypeMirror activityMirror = activityType.asType();
 
         for (Element element : elements) {
@@ -71,10 +72,13 @@ public class RouteProcessor extends BaseProcessor {
             Route route = element.getAnnotation(Route.class);
             RouteMeta.Builder builder = new RouteMeta.Builder();
 
-            // 判断 element 的类型，如 RouteType.ACTIVITY 等
+            // 判断 element 的类型，如 RouteType.ACTIVITY、RouteType.PROVIDER 等
             if (typeUtils.isSubtype(elementMirror, activityMirror)) {
                 messager.printMessage(Diagnostic.Kind.NOTE, "Found activity route:" + elementMirror.toString());
                 builder.setRouteType(RouteType.ACTIVITY);
+            } else if (typeUtils.isSubtype(elementMirror, providerType.asType())) {
+                messager.printMessage(Diagnostic.Kind.NOTE, "Found activity route:" + elementMirror.toString());
+                builder.setRouteType(RouteType.PROVIDER);
             } else {
                 throw new RuntimeException("The @Route is marked on unsupported class, look at [" + elementMirror.toString() + "].");
             }
@@ -189,7 +193,7 @@ public class RouteProcessor extends BaseProcessor {
             methodBuilder.addStatement("$N.put($S,$T.class)",
                     Constants.VARIABLE_PATH_MAP,
                     entry.getKey(),
-                    ClassName.get(Constants.PACKAGE_OF_GENERATE_FILE,entry.getValue()));
+                    ClassName.get(Constants.PACKAGE_OF_GENERATE_FILE, entry.getValue()));
         }
 
         methodBuilder.addStatement("return $N", Constants.VARIABLE_PATH_MAP);

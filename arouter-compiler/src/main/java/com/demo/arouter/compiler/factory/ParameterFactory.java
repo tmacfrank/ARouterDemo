@@ -13,6 +13,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 public class ParameterFactory {
@@ -22,17 +24,20 @@ public class ParameterFactory {
     private MethodSpec.Builder methodBuilder;
     private ClassName className;
     private Messager messager;
-    private ParameterSpec parameterSpec;
+    private Types typeUtils;
+    private TypeMirror providerType;
 
     private ParameterFactory(Builder builder) {
         this.className = builder.className;
         this.messager = builder.messager;
-        this.parameterSpec = builder.parameterSpec;
+        this.typeUtils = builder.typeUtils;
 
         methodBuilder = MethodSpec.methodBuilder(Constants.METHOD_LOAD_PARAMETER)
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(parameterSpec)
+                .addParameter(builder.parameterSpec)
                 .addAnnotation(Override.class);
+
+        providerType = builder.elementUtils.getTypeElement(Constants.IPROVIDER).asType();
     }
 
     /**
@@ -53,11 +58,11 @@ public class ParameterFactory {
         int type = typeMirror.getKind().ordinal();
         // 获取属性名
         String fieldName = element.getSimpleName().toString();
-        // 获取属性值，如果 @Autowired 的 name() 为空，则采用用属性名
+        // 获取属性值，如果 @Autowired 的 name() 为空，则采用属性名
         Autowired autowired = element.getAnnotation(Autowired.class);
         String annotationValue = StringUtils.isEmpty(autowired.name()) ?
                 fieldName : autowired.name();
-        // 最终拼接的前缀
+        // 赋值语句拼接的前缀
         String finalValue = "t." + fieldName;
         String methodContent = finalValue + " = t.getIntent().";
 
@@ -74,6 +79,16 @@ public class ParameterFactory {
             if (typeMirror.toString().equalsIgnoreCase(Constants.STRING)) {
                 // t.s = t.getIntent.getStringExtra("s");
                 methodContent += "getStringExtra($S)";
+            }
+
+            if (typeUtils.isSubtype(typeMirror, providerType)) {
+                // t.orderService = (IOrderService) ARouter.getInstance().build("/order/OrderServiceImpl").navigation(t);
+                methodContent = finalValue+" = ($T) $T.getInstance().build($S).navigation(t)";
+                methodBuilder.addStatement(methodContent,
+                        ClassName.get(typeMirror),
+                        ClassName.get(Constants.MANAGER_PACKAGE,Constants.PROJECT),
+                        annotationValue);
+                return;
             }
         }
 
@@ -93,6 +108,8 @@ public class ParameterFactory {
         private ClassName className;
         private Messager messager;
         private ParameterSpec parameterSpec;
+        private Types typeUtils;
+        private Elements elementUtils;
 
         public Builder(ParameterSpec parameterSpec) {
             this.parameterSpec = parameterSpec;
@@ -105,6 +122,16 @@ public class ParameterFactory {
 
         public Builder setMessager(Messager messager) {
             this.messager = messager;
+            return this;
+        }
+
+        public Builder setTypeUtils(Types typeUtils) {
+            this.typeUtils = typeUtils;
+            return this;
+        }
+
+        public Builder setElementUtils(Elements elementUtils) {
+            this.elementUtils = elementUtils;
             return this;
         }
 

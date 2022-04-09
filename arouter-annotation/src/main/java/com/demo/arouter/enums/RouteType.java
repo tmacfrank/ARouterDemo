@@ -8,7 +8,8 @@ import com.demo.arouter.utils.Constants;
  */
 public enum RouteType {
 
-    ACTIVITY(0, Constants.PACKAGE_NAME_ACTIVITY);
+    ACTIVITY(0, Constants.PACKAGE_NAME_ACTIVITY),
+    PROVIDER(1,Constants.PACKAGE_NAME_IPROVIDER);
 
     int id;
     String className;

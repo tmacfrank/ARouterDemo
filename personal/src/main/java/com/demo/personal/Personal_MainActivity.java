@@ -1,13 +1,19 @@
 package com.demo.personal;
 
+import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.demo.arouter.annotation.Autowired;
 import com.demo.arouter.annotation.Route;
+import com.demo.arouter.api.manager.ARouter;
+import com.demo.common.service.IOrderService;
 
 @Route(path = "/personal/Personal_MainActivity")
 public class Personal_MainActivity extends AppCompatActivity {
 
-    /*@Autowired
+    @Autowired(name = "/order/OrderServiceImpl")
     IOrderService orderService;
 
     @Override
@@ -16,11 +22,6 @@ public class Personal_MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_personal_main);
 
         ARouter.getInstance().inject(this);
-
-        int backlogCount = orderService.getBacklogCount();
-        int sendingCount = orderService.getSendingCount();
-        int evaluatingCount = orderService.getEvaluatingCount();
-        Toast.makeText(this, "待发货：" + backlogCount + "，待收货：" + sendingCount +
-                "，待评价：" + evaluatingCount, Toast.LENGTH_LONG).show();
-    }*/
+        Toast.makeText(this, "订单数量：" + orderService.getOrderCount(), Toast.LENGTH_LONG).show();
+    }
 }
